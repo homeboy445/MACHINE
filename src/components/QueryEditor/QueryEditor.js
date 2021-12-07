@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import ReactTooltip from "react-tooltip";
 import "./QueryEditor.css";
 import csvToJson from "csvtojson";
 import dataFile from "../../assets/data.csv";
@@ -75,6 +76,7 @@ const QueryEditor = () => {
       return getFilteredResults(data, value, "customerID", false);
     },
   };
+  const [loadedData, updateloadStatus] = useState(false);
   const [counter, update] = useState(0);
   const [queries, updateQueries] = useState([
     {
@@ -98,6 +100,15 @@ const QueryEditor = () => {
   const [searchBar, updateSearch] = useState("");
   const [searchResults, updateResults] = useState([]);
   const refs = useMemo(() => queries.map(() => React.createRef()), [queries]);
+
+  const saveDataLocally = () => {
+    const data = queries.map((item) => {
+      item.result = null;
+      item.resultTab = false;
+      return item;
+    });
+    localStorage.setItem(localStorage.getItem("session"), JSON.stringify(data));
+  };
 
   const toggleResultTab = (index, status = false) => {
     let data = queries;
@@ -155,6 +166,15 @@ const QueryEditor = () => {
   };
 
   useEffect(() => {
+    if (!localStorage.getItem("session")) {
+      return (window.location.href = "/");
+    }
+    const localData = localStorage.getItem(localStorage.getItem("session"));
+    if (localData && !loadedData) {
+      updateQueries(JSON.parse(localData)); //Loading data...
+      updateloadStatus(true);
+    }
+    saveDataLocally();
     if (JSON.stringify(masterData) === JSON.stringify({})) {
       fetch(dataFile).then(async (response) => {
         const reader = response.body.getReader();
@@ -234,6 +254,7 @@ const QueryEditor = () => {
                 <img
                   src={Play_Icon}
                   alt=""
+                  data-tip="run"
                   id="query_icon1"
                   onClick={() => {
                     const data = queries;
@@ -276,15 +297,30 @@ const QueryEditor = () => {
                         message:
                           "The query has syntax error(s), fix it & try again.",
                       };
+                      setTimeout(() => {
+                        data[index].is_error = {
+                          status: false,
+                          message: "Something's wrong. Try again later.",
+                        };
+                        update((counter + 1) % 10);
+                      }, 3000);
                     }
                     updateQueryData(data);
                     setTimeout(() => updateQueryData(data), 3000);
                     toggleResultTab(index, true);
                   }}
                 />
-                <img src={Share_Icon} alt="" id="query_icon2" />
+                <ReactTooltip />
+                <img
+                  data-tip="share"
+                  src={Share_Icon}
+                  alt=""
+                  id="query_icon2"
+                />
+                <ReactTooltip />
                 <div className="download_options">
                   <img
+                    data-tip="download"
                     src={Download_Icon}
                     alt=""
                     id="query_icon3"
@@ -295,6 +331,7 @@ const QueryEditor = () => {
                       toggleDownloadBar({ index: index, status: true });
                     }}
                   />
+                  <ReactTooltip />
                   <ul
                     style={{
                       opacity:
@@ -311,10 +348,13 @@ const QueryEditor = () => {
                           JSON.stringify({})
                           ? "1%"
                           : "-10%",
-                      pointerEvents: downloadBar.status &&
-                      downloadBar.index === index &&
-                      JSON.stringify(query.download_data) !==
-                        JSON.stringify({}) ? "all" : "none",
+                      pointerEvents:
+                        downloadBar.status &&
+                        downloadBar.index === index &&
+                        JSON.stringify(query.download_data) !==
+                          JSON.stringify({})
+                          ? "all"
+                          : "none",
                     }}
                   >
                     <li>
@@ -398,7 +438,7 @@ const QueryEditor = () => {
       <div
         className="query_catalogue"
         style={{
-          right: databaseInfoBox ? "-18%" : "-41.5%",
+          right: databaseInfoBox ? "-18%" : "-41%",
         }}
       >
         <img
@@ -410,7 +450,7 @@ const QueryEditor = () => {
         />
         <div className="info_bx">
           <h2>Database</h2>
-          <h3>Session: cincozx</h3>
+          <h3>Session: {localStorage.getItem("session") || " none"}</h3>
           <input
             type="text"
             placeholder="search tables"
