@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
 import QueryEditor from "./components/QueryEditor/QueryEditor";
+import ShareResultPage from "./components/ShareResultPage/ShareResultPage";
 
 const RedirectToHome = () => {
   useEffect(() => {
@@ -16,10 +17,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/editor" element={<QueryEditor />} />
-        <Route
-          path="*"
-          element={<RedirectToHome />}
-        />
+        <Route path="/sql-share/:id" element={<ShareResultPage />} />
+        <Route path="*" element={<RedirectToHome />} />
       </Routes>
     </div>
   );
