@@ -19,7 +19,6 @@ const ShareResultPage = () => {
 
   const getDownloadLink = (data, contentType = "application/json") => {
     let main_Data = null;
-    toggleDownloadBar(false);
     if (data.length === 0) {
       return null;
     }
@@ -53,7 +52,6 @@ const ShareResultPage = () => {
       updateQuery(JSON.parse(localStorage.getItem(uuid)));
       updateLoadStatus(true);
     }
-    console.log(query);
   }, [query, downloadBar]);
 
   return (
@@ -141,6 +139,11 @@ const ShareResultPage = () => {
                       color: "grey",
                       textDecoration: "none",
                     }}
+                    onClick={()=>{
+                      if (downloadBar) {
+                        toggleDownloadBar(false);
+                      }
+                    }}
                   >
                     As CSV
                   </a>
@@ -152,6 +155,11 @@ const ShareResultPage = () => {
                     style={{
                       color: "grey",
                       textDecoration: "none",
+                    }}
+                    onClick={()=>{
+                      if (downloadBar) {
+                        toggleDownloadBar(false);
+                      }
                     }}
                   >
                     As JSON

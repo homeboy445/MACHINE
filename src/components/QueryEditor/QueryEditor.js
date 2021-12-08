@@ -140,7 +140,6 @@ const QueryEditor = () => {
 
   const getDownloadLink = (data, contentType = "application/json") => {
     let main_Data = null;
-    toggleDownloadBar({index: -1, status: false});
     if (JSON.stringify(data) === JSON.stringify({})) {
       return data;
     }
@@ -388,6 +387,11 @@ const QueryEditor = () => {
                       <a
                         href={getDownloadLink(query.download_data, "text/csv")}
                         download={`${index + 1}.csv`}
+                        onClick={()=>{
+                          if (downloadBar.status) {
+                            toggleDownloadBar({ index: -1, status: false });
+                          }
+                        }}
                       >
                         As CSV
                       </a>
@@ -396,6 +400,11 @@ const QueryEditor = () => {
                       <a
                         href={getDownloadLink(query.download_data)}
                         download={`${index + 1}.json`}
+                        onClick={()=>{
+                          if (downloadBar.status) {
+                            toggleDownloadBar({ index: -1, status: false });
+                          }
+                        }}
                       >
                         As JSON
                       </a>
