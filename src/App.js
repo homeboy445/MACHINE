@@ -13,7 +13,7 @@ const RedirectToHome = () => {
 
 const App = () => {
   return (
-    <div style={{ minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh", scrollBehavior: "smooth" }}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/editor" element={<QueryEditor />} />

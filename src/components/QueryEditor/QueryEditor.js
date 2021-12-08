@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
-import ReactTooltip from "react-tooltip";
 import "./QueryEditor.css";
+import { v4 as uuid } from "uuid";
+import { animateScroll as scroll } from "react-scroll";
 import csvToJson from "csvtojson";
 import dataFile from "../../assets/data.csv";
 import Play_Icon from "../../assets/icons/play_arrow.svg";
@@ -102,11 +103,8 @@ const QueryEditor = () => {
   const refs = useMemo(() => queries.map(() => React.createRef()), [queries]);
 
   const saveDataLocally = () => {
-    const data = queries.map((item) => {
-      item.result = null;
-      item.resultTab = false;
-      return item;
-    });
+    const data = queries[0];
+    data.session = localStorage.getItem("session");
     localStorage.setItem(localStorage.getItem("session"), JSON.stringify(data));
   };
 
@@ -171,7 +169,18 @@ const QueryEditor = () => {
     }
     const localData = localStorage.getItem(localStorage.getItem("session"));
     if (localData && !loadedData) {
-      updateQueries(JSON.parse(localData)); //Loading data...
+      let parsedData;
+      try {
+        parsedData = JSON.parse(localData).map((item) => {
+          item.result = null;
+          item.resultTab = false;
+          return item;
+        });
+        updateQueries(parsedData); //Loading data
+      } catch (e) {
+        //A fallback in case the value is undefined and the flow of execution managed
+        //to get inside of the if block...
+      }
       updateloadStatus(true);
     }
     saveDataLocally();
@@ -188,6 +197,7 @@ const QueryEditor = () => {
               response = { status: false };
             }
             updateData(response);
+            scroll.scrollToTop();
           });
       });
     }
@@ -202,7 +212,17 @@ const QueryEditor = () => {
     <div className="query_editor">
       <div className="site_header">
         <div className="site_header_sub">
-          <h1 className="site_title">MACHINE.</h1>
+          <h1
+            className="site_title"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            style={{
+              cursor: "pointer",
+            }}
+          >
+            MACHINE.
+          </h1>
           <h3>sql editor</h3>
         </div>
         <button
@@ -237,7 +257,7 @@ const QueryEditor = () => {
                 <input
                   type="text"
                   spellCheck="false"
-                  className="quert_input"
+                  className="query_input"
                   onChange={(e) => {
                     const data = queries;
                     data[index].name = e.target.value;
@@ -303,21 +323,28 @@ const QueryEditor = () => {
                           message: "Something's wrong. Try again later.",
                         };
                         update((counter + 1) % 10);
-                      }, 3000);
+                      }, 500);
                     }
                     updateQueryData(data);
                     setTimeout(() => updateQueryData(data), 3000);
                     toggleResultTab(index, true);
                   }}
                 />
-                <ReactTooltip />
                 <img
                   data-tip="share"
                   src={Share_Icon}
                   alt=""
                   id="query_icon2"
+                  onClick={() => {
+                    if (query.is_error.status || query.result === null) {
+                      console.log(query);
+                      return;
+                    }
+                    const u_id = uuid();
+                    localStorage.setItem(u_id, JSON.stringify(query));
+                    window.location.href = `/sql-share/${u_id}`;
+                  }}
                 />
-                <ReactTooltip />
                 <div className="download_options">
                   <img
                     data-tip="download"
@@ -331,7 +358,6 @@ const QueryEditor = () => {
                       toggleDownloadBar({ index: index, status: true });
                     }}
                   />
-                  <ReactTooltip />
                   <ul
                     style={{
                       opacity:
@@ -361,10 +387,6 @@ const QueryEditor = () => {
                       <a
                         href={getDownloadLink(query.download_data, "text/csv")}
                         download={`${index + 1}.csv`}
-                        style={{
-                          color: "grey",
-                          textDecoration: "none",
-                        }}
                       >
                         As CSV
                       </a>
@@ -373,10 +395,6 @@ const QueryEditor = () => {
                       <a
                         href={getDownloadLink(query.download_data)}
                         download={`${index + 1}.json`}
-                        style={{
-                          color: "grey",
-                          textDecoration: "none",
-                        }}
                       >
                         As JSON
                       </a>
@@ -448,7 +466,13 @@ const QueryEditor = () => {
             toggelDBInfoBox(!databaseInfoBox);
           }}
         />
-        <div className="info_bx">
+        <div
+          className="info_bx"
+          style={{
+            transition: "0.3s ease",
+            opacity: !databaseInfoBox ? 0.1 : 1,
+          }}
+        >
           <h2>Database</h2>
           <h3>Session: {localStorage.getItem("session") || " none"}</h3>
           <input
@@ -505,6 +529,19 @@ const QueryEditor = () => {
                 </div>
               );
             })}
+            <button
+              className="delete_cell_btn"
+              disabled={queries.length === 1}
+              onClick={() => {
+                let data = JSON.stringify(queries);
+                data = JSON.parse(data);
+                data.splice(data.length - 1, 1);
+                updateQueryData(data);
+                scroll.scrollToTop();
+              }}
+            >
+              Delete Cell -
+            </button>
           </div>
         </div>
       </div>

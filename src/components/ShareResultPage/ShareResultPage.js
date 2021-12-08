@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from "react";
-import ReactTooltip from "react-tooltip";
+import { v4 as uuid } from "uuid";
 import Download_Icon from "../../assets/icons/download.svg";
 
 const ShareResultPage = () => {
-  const [query, updateQuery] = useState([
-    {
-      name: "",
-      result: null,
-      resultTab: false,
-      is_error: {
-        status: false,
-        message: "Something's wrong. Try again later.",
-      },
-      download_data: {},
+  const [query, updateQuery] = useState({
+    name: "",
+    result: null,
+    resultTab: false,
+    is_error: {
+      status: false,
+      message: "Something's wrong. Try again later.",
     },
-  ]);
-  const [downloadBar, toggleDownloadBar] = useState({
-    0: -1,
-    status: false,
+    download_data: [],
+    session: "",
   });
+  const [downloadBar, toggleDownloadBar] = useState(false);
+  const [isLoaded, updateLoadStatus] = useState(false);
 
   const getDownloadLink = (data, contentType = "application/json") => {
-      return null;
     let main_Data = null;
+    if (data.length === 0) {
+      return null;
+    }
     if (JSON.stringify(data) === JSON.stringify({})) {
-      return data;
+      return null;
     }
     if (contentType === "application/json") {
       main_Data = JSON.stringify(data);
@@ -46,26 +45,62 @@ const ShareResultPage = () => {
     return window.URL.createObjectURL(blob);
   };
 
-  useEffect(()=>{
-    console.log(window.location.pathname);
-  },[]);
+  useEffect(() => {
+    if (!isLoaded) {
+      const url = window.location.pathname;
+      const uuid = url.substr(url.lastIndexOf("/") + 1);
+      updateQuery(JSON.parse(localStorage.getItem(uuid)));
+      updateLoadStatus(true);
+    }
+    console.log(query);
+  }, [query, downloadBar]);
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <div className="site_header">
         <div className="site_header_sub">
-          <h1 className="site_title">MACHINE.</h1>
+          <h1
+            className="site_title"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            style={{
+              cursor: "pointer",
+            }}
+          >
+            MACHINE.
+          </h1>
           <h3>sql editor</h3>
         </div>
+        <h2 id="sess_hdr">{query.session || "Session1"}</h2>
       </div>
-      <div className="query_list">
+      <div
+        className="query_list"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+          marginBottom: "5%",
+        }}
+      >
         <div className="query_box">
           <div className="query_edit">
             <p>[1]: </p>
             <input
               type="text"
               spellCheck="false"
-              className="quert_input"
+              className="query_input"
+              value={query.name}
               disabled={true}
             />
             <div className="download_options">
@@ -78,7 +113,6 @@ const ShareResultPage = () => {
                   toggleDownloadBar(!downloadBar);
                 }}
               />
-              <ReactTooltip />
               <ul
                 style={{
                   opacity:
@@ -136,7 +170,36 @@ const ShareResultPage = () => {
                   : "1px",
                 visibility: query.resultTab === true ? "visible" : "hidden",
               }}
-            ></div>
+            >
+              {
+                <table id="res_table">
+                  <tbody>
+                    <tr>
+                      {query.download_data.length > 0
+                        ? Object.keys(query.download_data[0]).map(
+                            (item, index) => {
+                              return <th key={uuid()}>{item}</th>;
+                            }
+                          )
+                        : null}
+                    </tr>
+                  </tbody>
+                  {query.download_data.length > 0
+                    ? (query.download_data || []).map((dataObj, index) => {
+                        return (
+                          <tbody key={uuid()}>
+                            <tr>
+                              {Object.keys(dataObj).map((key, index) => {
+                                return <td key={uuid()}>{dataObj[key]}</td>;
+                              })}
+                            </tr>
+                          </tbody>
+                        );
+                      })
+                    : null}
+                </table>
+              }
+            </div>
           </div>
         </div>
       </div>
