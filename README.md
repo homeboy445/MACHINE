@@ -17,7 +17,7 @@
 ![ql5](https://user-images.githubusercontent.com/61937872/145217852-44a0fd63-bcdd-4c26-b3bb-d37fe94a7f9b.gif)
 <br />
 
-* The results can also be shared easily via the share link.
+* The results can also be shared easily via the share link(& will be copied to the clipboard!)[Also, it will only work locally!].
 ![ql6](https://user-images.githubusercontent.com/61937872/145217909-099737ae-cfed-4b6e-9713-c2b16b304b00.gif)
 <br />
 
@@ -26,6 +26,15 @@
 <br />
 
 ### NOTE: Since, there's no backend support currently to this app, the session will automatically expire once the user goes back to home or exits the app.
+
+## Pre-Defined Queries
+### The pre-defined queries that can be used to test the app are(case-insensitive):-
+* **SELECT * FROM customers**
+* **SELECT * FROM customers WHERE contactName**
+* **SELECT * FROM customers WHERE companyName**
+* **SELECT * FROM customers WHERE city**
+* **SELECT * FROM customers WHERE name**
+* **SELECT * FROM customers WHERE customerId**
 
 ## Page Load Time(the values provided are approximated)
 * The page load time of the home page is coming out to be - 2160ms(on first open) & 1148ms(after first open).
