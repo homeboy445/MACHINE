@@ -24,24 +24,39 @@ const App = () => {
   return (
     <div>
       {loading ? (
-        <Loader
-          type="TailSpin"
-          color="#427ef7"
-          height={250}
-          width={250}
-          style={{
-            position: "absolute",
-            left: "40%",
-            top: "40%",
-          }}
-          timeout={4000}
-        />
+        window.innerWidth >= 1000 ? (
+          <Loader
+            type="TailSpin"
+            color="#427ef7"
+            height={250}
+            width={250}
+            style={{
+              position: "absolute",
+              left: "40%",
+              top: "40%",
+            }}
+            timeout={4000}
+          />
+        ) : (
+          <Loader
+            type="TailSpin"
+            color="#427ef7"
+            height={150}
+            width={150}
+            style={{
+              position: "absolute",
+              left: "33%",
+              top: "33%",
+            }}
+            timeout={4000}
+          />
+        )
       ) : null}
       <div
         style={{
           minHeight: "100vh",
           scrollBehavior: "smooth",
-          opacity: loading ? 0.01 : 1,
+          opacity: loading ? 0 : 1,
           pointerEvents: loading ? "none" : "all",
         }}
       >

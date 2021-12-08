@@ -405,7 +405,8 @@
   color: #fff;
   cursor: pointer;
   display: inline-block;
-  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: 14px;
   font-weight: 600;
   line-height: 20px;
@@ -433,15 +434,104 @@
 }
 .delete_cell_btn:disabled {
   background-color: #d39494;
-  border-color: rgba(27, 31, 35, .1);
-  color: rgba(255, 255, 255, .8);
+  border-color: rgba(27, 31, 35, 0.1);
+  color: rgba(255, 255, 255, 0.8);
   cursor: default;
 }
 .delete_cell_btn:active {
   background-color: #8e2929;
   box-shadow: rgba(70, 20, 20, 0.2) 0 1px 0 inset;
 }
-
+@media screen and (max-width: 900px) {
+  .query_catalogue {
+    pointer-events: "none";
+    border: 1px solid black;
+    opacity: 0;
+  }
+  .site_header {
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1%;
+    margin-left: 2%;
+    margin-right: 2%;
+    position: fixed;
+    top: -2%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    z-index: 1001999;
+    background: white;
+  }
+  .site_header_sub {
+    margin: 0;
+    width: 100%;
+  }
+  .site_header_sub > h3 {
+    opacity: 0;
+  }
+  .site_title {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    margin-top: 5%;
+    border: 2px solid black;
+    background: black;
+    color: yellow;
+  }
+  .new_cell_btn {
+    margin: 0;
+    margin-bottom: 2%;
+    align-self: center;
+    margin-top: 4%;
+    padding: 2%;
+    font-size: 1rem;
+  }
+  .query_list {
+    margin-top: 35%;
+  }
+  .query_edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 1rem;
+  }
+  .query_edit > p {
+    margin-left: 1%;
+    margin-right: 1%;
+  }
+  .query_edit > .query_input {
+    width: 100%;
+    height: 30px;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+  }
+  .query_result {
+    margin-left: 30px;
+    font-size: 1rem;
+    width: 70%;
+    height: 400px;
+    background: rgba(128, 128, 128, 0.212);
+    overflow: scroll;
+  }
+  .list2 {
+    margin-top: 50%;
+    margin-bottom: 5%;
+  }
+  .download_options > ul {
+    width: 10%;
+  }
+  .download_options > ul > li {
+    font-size: 0.8rem;
+    color: blue;
+    margin-bottom: 5%;
+  }
+  .download_options > ul > li > a {
+    color: black;
+    text-decoration: none;
+  }
+}
 
 
 
