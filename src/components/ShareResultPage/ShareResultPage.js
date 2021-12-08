@@ -19,6 +19,7 @@ const ShareResultPage = () => {
 
   const getDownloadLink = (data, contentType = "application/json") => {
     let main_Data = null;
+    toggleDownloadBar(false);
     if (data.length === 0) {
       return null;
     }

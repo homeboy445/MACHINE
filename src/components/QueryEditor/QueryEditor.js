@@ -140,6 +140,7 @@ const QueryEditor = () => {
 
   const getDownloadLink = (data, contentType = "application/json") => {
     let main_Data = null;
+    toggleDownloadBar({index: -1, status: false});
     if (JSON.stringify(data) === JSON.stringify({})) {
       return data;
     }
