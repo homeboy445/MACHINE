@@ -103,7 +103,8 @@ const QueryEditor = () => {
   const refs = useMemo(() => queries.map(() => React.createRef()), [queries]);
 
   const saveDataLocally = () => {
-    const data = queries[0];
+    let data = JSON.stringify(queries);
+    data = JSON.parse(data);
     data.session = localStorage.getItem("session");
     localStorage.setItem(localStorage.getItem("session"), JSON.stringify(data));
   };
@@ -322,6 +323,7 @@ const QueryEditor = () => {
                           status: false,
                           message: "Something's wrong. Try again later.",
                         };
+                        data[index].resultTab = false;
                         update((counter + 1) % 10);
                       }, 500);
                     }
@@ -335,14 +337,19 @@ const QueryEditor = () => {
                   src={Share_Icon}
                   alt=""
                   id="query_icon2"
-                  onClick={() => {
+                  onClick={async () => {
                     if (query.is_error.status || query.result === null) {
-                      console.log(query);
                       return;
                     }
                     const u_id = uuid();
+                    const pathName = "/sql-share/" + u_id;
+                    await navigator.clipboard
+                      .writeText(window.location.origin + pathName)
+                      .then((response) => {
+                        return;
+                      });
                     localStorage.setItem(u_id, JSON.stringify(query));
-                    window.location.href = `/sql-share/${u_id}`;
+                    window.location.href = pathName;
                   }}
                 />
                 <div className="download_options">
@@ -387,7 +394,7 @@ const QueryEditor = () => {
                       <a
                         href={getDownloadLink(query.download_data, "text/csv")}
                         download={`${index + 1}.csv`}
-                        onClick={()=>{
+                        onClick={() => {
                           if (downloadBar.status) {
                             toggleDownloadBar({ index: -1, status: false });
                           }
@@ -400,7 +407,7 @@ const QueryEditor = () => {
                       <a
                         href={getDownloadLink(query.download_data)}
                         download={`${index + 1}.json`}
-                        onClick={()=>{
+                        onClick={() => {
                           if (downloadBar.status) {
                             toggleDownloadBar({ index: -1, status: false });
                           }
