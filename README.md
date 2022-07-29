@@ -1,5 +1,5 @@
 # SQL MACHINE - A UI Concept
-### The place to resolve your SQL queries and worries😉.
+
 ---
 ## Description
 ### This is a demo SQL editor which can be used to query data easily from a given table(only one pre-existing table is there) and display it's result(only few SQL queries are working since it's a demo).
