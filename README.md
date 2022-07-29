@@ -1,4 +1,4 @@
-# SQL MACHINE
+# SQL MACHINE - A UI Concept
 ### The place to resolve your SQL queries and worries😉.
 ---
 ## Description
